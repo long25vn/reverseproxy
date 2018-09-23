@@ -1,0 +1,67 @@
+  version: "3.3"
+
+  services:
+    reverse-proxy:
+      image: traefik
+      command: --api --docker --docker.swarmmode --docker.watch --debug=true --loglevel=DEBUG --traefiklog --accesslog --traefikLog.filePath="/path/to/traefik.log" --traefikLog.format="json" --accessLog.filePath="/path/to/access.log" --accessLog.format="json"
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+      networks:
+        - proxy
+      ports:
+        - target: 80
+          published: 80
+        - target: 8080
+          published: 8080
+        - target: 443
+          published: 443
+
+      deploy:
+        placement:
+          constraints:
+            - node.role == manager
+        labels:
+          - "traefik.docker.network=proxy"
+
+
+    my-proxy:
+      image: mygateway:latest
+      ports:
+        - "5000:5000"
+      networks:
+        - proxy
+      deploy:
+        placement:
+          constraints:
+            - node.role == manager
+        labels:
+          - "traefik.port=5000"
+          - "traefik.enable=true"
+          - "traefik.frontend.rule=PathPrefixStrip:/api"
+          - "traefik.docker.network=proxy"
+
+    auth:
+      image: rodolpheche/wiremock
+      networks:
+        - proxy
+      volumes:
+        - ./stubs/service1:/home/wiremock/mappings
+      deploy:
+        placement:
+          constraints:
+            - node.role == manager 
+    
+    blog:
+      image: rodolpheche/wiremock
+      networks:
+        - proxy
+      volumes:
+        - ./stubs/service2:/home/wiremock/mappings
+      deploy:
+        placement:
+          constraints:
+            - node.role == manager
+  networks:
+    proxy:
+      external: true
+

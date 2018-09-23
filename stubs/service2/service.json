@@ -1,0 +1,13 @@
+{
+    "request": {
+      "method": "POST",
+      "url": "/blog/createpost"
+    },
+    "response": {
+      "status": 200,
+      "jsonBody": {"message":"Tao Bai Viet Thanh Cong!"},
+      "headers": {
+          "Content-Type": "application/json"
+      }
+    }
+  }

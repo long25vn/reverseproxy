@@ -1,0 +1,12 @@
+[
+  {
+    "service": "auth",
+    "method": "login",
+    "ispublic": true
+  },
+  {
+    "service": "blog",
+    "method": "createpost",
+    "ispublic": false
+  }
+]
