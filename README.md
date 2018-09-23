@@ -1,5 +1,10 @@
 # reverse proxy
 
++ Traefik: load balancing, rate limiting, config https, Circuit breakers, retry ....
++ API Gateway: Authorize
++ Blog Service
++ Auth Service
+
 ## install 
 
 ```
